@@ -5,6 +5,7 @@ import numpy as np
 from graph import Graph
 
 def make_random_gaussian_graph(num_nodes=100):
+    '''Function borrowed from Prof Bailey'''
     rng = np.random.default_rng(seed=42)
     cities = rng.normal(0, 1, (num_nodes, 2))
     dists = np.full(shape=(num_nodes, num_nodes), fill_value=0.0)
@@ -28,17 +29,12 @@ class TravelingSalesperson:
         self.best_fitness_history = []
 
     def fitness(self, route):
+        '''We calculate how good something based on the inverse of the total weight
+        as the number is bigger we have a better candidates'''
         return 1 / self.graph.get_tour_weight(route)
 
     def generate_population(self):
-        population = []
-        for i in range(self.population_size):
-            route = list(range(self.num_cities))
-            random.shuffle(route)
-            population.append(route)
-        return population
-    
-    def generate_population(self):
+        '''Create a random selection of routes'''
         population = []
         for i in range(self.population_size):
             route = list(range(self.num_cities))
@@ -47,6 +43,19 @@ class TravelingSalesperson:
         return population
 
     def crossover(self, parent1, parent2):
+        """
+        Perform a crossover operation on two parent routes to generate a new child route.
+        
+        The crossover is performed by selecting a random segment from the first parent (parent1)
+        and filling the rest of the route with non-duplicated cities from the second parent (parent2).
+
+        Parameters:
+        - parent1 (list of int): The route of the first parent.
+        - parent2 (list of int): The route of the second parent.
+
+        Returns:
+        - list of int: A new child route generated from the two parents.
+        """
         start = random.randint(0, len(parent1) - 1)
         end = random.randint(start + 1, len(parent1))
         child = [None] * len(parent1)
@@ -60,6 +69,18 @@ class TravelingSalesperson:
         return child
 
     def mutate(self, route):
+        """
+        Mutate a route by swapping two cities, with a probability defined by the mutation rate.
+
+        This mutation allows the genetic algorithm to explore a wider variety of routes and
+        helps to avoid local minima by introducing randomness.
+
+        Parameters:
+        - route (list of int): The route to mutate.
+
+        Returns:
+        - list of int: The mutated route.
+        """
         if random.random() < self.mutation_rate:
             idx1, idx2 = random.sample(range(len(route)), 2)
             route[idx1], route[idx2] = route[idx2], route[idx1]
@@ -151,5 +172,6 @@ def main():
     print(f"Best fitness (reciprocal of total distance): {tsp.best_fitness}")
     tsp.plot_fitness_history()
     tsp.plot_cities_and_route()
+
 if __name__ == "__main__":
     main()

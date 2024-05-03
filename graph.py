@@ -34,3 +34,4 @@ class Graph:
 
         tour.append(start_index)  # To complete the loop
         return tour
+
