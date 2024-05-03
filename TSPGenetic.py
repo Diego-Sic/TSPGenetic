@@ -43,18 +43,9 @@ class TravelingSalesperson:
         return population
 
     def crossover(self, parent1, parent2):
-        """
-        Perform a crossover operation on two parent routes to generate a new child route.
-        
-        The crossover is performed by selecting a random segment from the first parent (parent1)
-        and filling the rest of the route with non-duplicated cities from the second parent (parent2).
-
-        Parameters:
-        - parent1 (list of int): The route of the first parent.
-        - parent2 (list of int): The route of the second parent.
-
-        Returns:
-        - list of int: A new child route generated from the two parents.
+        """        
+        We selecting a random segment from the first parent
+        and filling the rest of the route with non-duplicated cities from the second parent
         """
         start = random.randint(0, len(parent1) - 1)
         end = random.randint(start + 1, len(parent1))
@@ -70,16 +61,8 @@ class TravelingSalesperson:
 
     def mutate(self, route):
         """
-        Mutate a route by swapping two cities, with a probability defined by the mutation rate.
-
         This mutation allows the genetic algorithm to explore a wider variety of routes and
         helps to avoid local minima by introducing randomness.
-
-        Parameters:
-        - route (list of int): The route to mutate.
-
-        Returns:
-        - list of int: The mutated route.
         """
         if random.random() < self.mutation_rate:
             idx1, idx2 = random.sample(range(len(route)), 2)
@@ -89,7 +72,7 @@ class TravelingSalesperson:
     def run_genetic_algorithm(self):
         population = self.generate_population()
 
-        for generation in range(self.num_iterations):
+        for _ in range(self.num_iterations):
             fitness_values = [self.fitness(route) for route in population]
             best_route_index = fitness_values.index(max(fitness_values))
             best_route = population[best_route_index]
@@ -142,15 +125,15 @@ class TravelingSalesperson:
         fig, ax = plt.subplots(figsize=(10, 8))
         ax.scatter(x_coords, y_coords, color='blue', label='Cities')
 
+
         max_dist = np.max(self.graph.weights)
 
         # Draw edges between each pair of nodes
         for i in range(self.num_cities):
             for j in range(i + 1, self.num_cities):
-                # Using distance to adjust the transparency of the line
                 distance = self.graph.weight_from_i_to_j(i, j)
                 alpha = 1 - (distance / max_dist)
-                ax.plot([x_coords[i], x_coords[j]], [y_coords[i], y_coords[j]], 'gray', alpha=alpha, linewidth=0.5)
+                ax.plot([x_coords[i], x_coords[j]], [y_coords[i], y_coords[j]], 'gray')
 
         ax.set_xlabel('X coordinate')
         ax.set_ylabel('Y coordinate')
