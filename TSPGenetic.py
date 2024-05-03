@@ -123,7 +123,7 @@ class TravelingSalesperson:
         x_coords = cities[:, 0]
         y_coords = cities[:, 1]
         fig, ax = plt.subplots(figsize=(10, 8))
-        ax.scatter(x_coords, y_coords, color='blue', label='Cities')
+        ax.scatter(x_coords, y_coords, color='blue', labe='Cities')
 
 
         max_dist = np.max(self.graph.weights)
