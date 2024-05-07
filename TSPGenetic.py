@@ -77,10 +77,10 @@ class TravelingSalesperson:
         return population
 
     def crossover(self, parent1, parent2):
-        """        
+        '''        
         We selecting a random segment from the first parent
         and filling the rest of the route with non-duplicated cities from the second parent
-        """
+        '''
         start = random.randint(0, len(parent1) - 1)
         end = random.randint(start + 1, len(parent1))
         child = [None] * len(parent1)
@@ -94,10 +94,9 @@ class TravelingSalesperson:
         return child
 
     def mutate(self, route):
-        """
-        This mutation allows the genetic algorithm to explore a wider variety of routes and
-        helps to avoid local minima by introducing randomness.
-        """
+        '''
+        We swap two random cities in the route
+        '''
         if random.random() < self.mutation_rate:
             idx1, idx2 = random.sample(range(len(route)), 2)
             route[idx1], route[idx2] = route[idx2], route[idx1]
@@ -183,8 +182,8 @@ def main():
     tsp = TravelingSalesperson(num_cities=numCities, num_iterations=numIterations, mutation_rate=mutationRate)
     tsp.plot_initial_graph()
     tsp.run_genetic_algorithm()
-    print(f"Best route: {tsp.best_route}")
-    print(f"Best fitness (reciprocal of total distance): {tsp.best_fitness}")
+    print(f'Best route: {tsp.best_route}')
+    print(f"Best fitness: {tsp.best_fitness}")
     tsp.plot_fitness_history()
     tsp.plot_cities_and_route()
 
