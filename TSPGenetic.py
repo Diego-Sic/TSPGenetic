@@ -1,8 +1,42 @@
-import argparse
 import random
 import matplotlib.pyplot as plt
 import numpy as np
-from graph import Graph
+import numpy as np
+class Graph:
+    def __init__(self, node_names: list, weights: np.ndarray, city_locations=None):
+        assert len(weights) == len(weights[0]) == len(node_names), 'Size mismatch!'
+        self.node_names = node_names
+        self.nodes = list(range(len(node_names)))
+        self.weights = weights
+        self.city_locations = city_locations
+
+    def weight_from_i_to_j(self, i: int, j: int) -> int:
+        return self.weights[i][j]
+
+    def get_tour_weight(self, tour):
+        return sum(self.weights[tour[i-1]][tour[i]] for i in range(1, len(tour))) + self.weights[tour[-1]][tour[0]]
+
+    def get_node_locations(self) -> np.ndarray:
+        return self.city_locations
+
+    def get_city_name_for_index(self, i):
+        return self.node_names[i]
+
+    def generate_nna_tour(self, start_index=0) -> list:
+        N = len(self.nodes)
+        unvisited = set(self.nodes)
+        tour = [start_index]
+        unvisited.remove(start_index)
+        current_index = start_index
+
+        while unvisited:
+            next_index = min(unvisited, key=lambda x: self.weights[current_index][x])
+            tour.append(next_index)
+            unvisited.remove(next_index)
+            current_index = next_index
+
+        tour.append(start_index)  # To complete the loop
+        return tour
 
 def make_random_gaussian_graph(num_nodes=100):
     '''Function borrowed from Prof Bailey'''
@@ -123,7 +157,7 @@ class TravelingSalesperson:
         x_coords = cities[:, 0]
         y_coords = cities[:, 1]
         fig, ax = plt.subplots(figsize=(10, 8))
-        ax.scatter(x_coords, y_coords, color='blue', labe='Cities')
+        ax.scatter(x_coords, y_coords, color='blue', label='Cities')
 
 
         max_dist = np.max(self.graph.weights)
@@ -133,7 +167,7 @@ class TravelingSalesperson:
             for j in range(i + 1, self.num_cities):
                 distance = self.graph.weight_from_i_to_j(i, j)
                 alpha = 1 - (distance / max_dist)
-                ax.plot([x_coords[i], x_coords[j]], [y_coords[i], y_coords[j]], 'gray')
+                ax.plot([x_coords[i], x_coords[j]], [y_coords[i], y_coords[j]], 'k-', linewidth=0.5, alpha=alpha)
 
         ax.set_xlabel('X coordinate')
         ax.set_ylabel('Y coordinate')
@@ -142,13 +176,11 @@ class TravelingSalesperson:
         plt.show()
 
 def main():
-    parser = argparse.ArgumentParser(description="Genetic Algorithm for Traveling Salesperson Problem")
-    parser.add_argument("num_cities", type=int, help="Number of cities")
-    parser.add_argument("num_iterations", type=int, help="Number of iterations")
-    parser.add_argument("mutation_rate", type=float, help="Probability of random mutations")
-    args = parser.parse_args()
+    numCities = 70
+    numIterations = 1000
+    mutationRate = 0.1
 
-    tsp = TravelingSalesperson(args.num_cities, args.num_iterations, args.mutation_rate)
+    tsp = TravelingSalesperson(num_cities=numCities, num_iterations=numIterations, mutation_rate=mutationRate)
     tsp.plot_initial_graph()
     tsp.run_genetic_algorithm()
     print(f"Best route: {tsp.best_route}")
